@@ -1,0 +1,100 @@
+.mfp-with-zoom .mfp-container,
+.mfp-with-zoom.mfp-bg {
+    opacity: 0;
+    @include transition(opacity 0.2s ease-out);
+}
+.mfp-with-zoom .mfp-container {
+    @include transition(opacity 0.5s ease-out);
+}
+.mfp-with-zoom.mfp-ready .mfp-container {
+    opacity: 1;
+}
+.mfp-with-zoom.mfp-ready.mfp-bg {
+    opacity: 0.8;
+}
+.mfp-with-zoom.mfp-removing .mfp-container,
+.mfp-with-zoom.mfp-removing.mfp-bg {
+    opacity: 0;
+}
+
+// Gallery lightbox
+.gallery-lightbox {
+    background-color: #FFF;
+
+    &:after {
+        background-color: transparent;
+        box-shadow: none;
+        bottom: 0;
+        top: 0;
+    }
+
+    .mfp-img {
+        padding: 0;
+    }
+
+    .mfp-bottom-bar {
+        margin-top: 0;
+        background-color: #FFF;
+    }
+
+    .mfp-title {
+        color: $body-color;
+        text-align: center;
+        padding: $spacer $grid-gutter-width/2;
+        font-size: $font-size-sm;
+    }
+
+    .mfp-close,
+    .mfp-pin-it {
+        position: absolute;
+        padding: 0;
+        right: $spacer;
+        top: $spacer;
+        width: $spacer*1.5;
+        height: $spacer*1.5;
+        background-color: $gray-lighter;
+        line-height: 1;
+        opacity: 1;
+        text-align: center;
+        color: $brand-primary;
+
+        @include hover-focus {
+            background-color: #fff;
+        }
+    }
+
+    .mfp-close {
+        font-size: 0;
+
+         &:before,
+         &:after {
+             content: "";
+             display: block;
+             height: 1px;
+             overflow: hidden;
+             font-size: 0;
+             background-color: $brand-primary;
+             position: absolute;
+             top: 50%;
+             left: 0;
+             width: 100%;
+         }
+
+         &:before {
+            transform: rotate(45deg);
+         }
+
+         &:after {
+            transform: rotate(-45deg);
+         }
+    }
+
+    .mfp-pin-it {
+        top: $spacer*3;
+        font-size: $font-size-base*1.25;
+    }
+
+    .mfp-zoom-out-cur .mfp-close {
+        cursor: pointer;
+    }
+}

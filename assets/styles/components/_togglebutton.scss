@@ -1,0 +1,60 @@
+.togglebutton {
+  vertical-align: middle;
+  &, label, input, .toggle {
+    user-select: none;
+  }
+  label {
+    font-weight: 400;
+    cursor: pointer;
+  }
+    input[type=checkbox] {
+      opacity: 0;
+      width: 0;
+      height:0;
+      vertical-align: top;
+    }
+    .toggle,
+    input[type=checkbox][disabled] + .toggle {
+      content: "";
+      display: inline-block;
+      width: 30px;
+      height: 15px;
+      background-color: $gray-light;
+      border-radius: 15px;
+      margin-right: 10px;
+      @include transition(background 0.3s ease);
+      vertical-align: middle;
+    }
+    .toggle:after {
+      content: "";
+      display: inline-block;
+      vertical-align: top;
+      width: 20px;
+      height: 20px;
+      background-color: $gray-lighter;
+      border-radius: 20px;
+      position: relative;
+      box-shadow: 0 1px 3px 1px rgba(0,0,0,0.4);
+      left: -5px;
+      top: -2px;
+      @include transition(left 0.3s ease, background 0.3s ease, box-shadow 0.1s ease);
+    }
+    input[type=checkbox][disabled] + .toggle:after,
+    input[type=checkbox][disabled]:checked + .toggle:after{
+      background-color: $gray-light;
+    }
+    input[type=checkbox] + .toggle:active:after,
+    input[type=checkbox][disabled] + .toggle:active:after {
+      box-shadow: 0 1px 3px 1px rgba(0,0,0,0.4), 0 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    input[type=checkbox]:checked + .toggle {
+        background-color: $gray-lighter;
+    }
+    input[type=checkbox]:checked + .toggle:after {
+      left: 15px;
+    }
+
+    @include variations("input[type=checkbox]:checked + .toggle", background-color);
+    @include variations("input[type=checkbox]:checked + .toggle:after", background-color);
+
+}

@@ -1,0 +1,16 @@
+@mixin variations($extra, $property) {
+    $colors: (
+        'primary': $brand-primary, 
+        'success': $brand-success, 
+        'info': $brand-info, 
+        'warning': $brand-warning, 
+        'danger': $brand-danger
+    );
+
+    @each $name, $value in $colors {
+
+        &-#{$name} #{$extra}{
+            #{$property}: #{$value};
+        }
+    }
+}
