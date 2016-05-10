@@ -13,14 +13,15 @@
     "fastclick": "~1.0.6",
     "magnific-popup": "~1.0.0",
     "include-media": "~1.4.2",
+    "tether": "~1.3.2",
     "bootstrap": "v4.0.0-alpha.2"
   },
   "overrides": {
     "modernizr": {
       "main": "./modernizr.js"
     },
-    "bootstrap" : {
-      "main" : [
+    "bootstrap": {
+      "main": [
         "./scss/_variables.scss",
         "./scss/_mixins.scss",
         "./scss/_normalize.scss",
