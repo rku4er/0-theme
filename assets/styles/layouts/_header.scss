@@ -15,39 +15,16 @@
         padding-right: $grid-gutter-width;
     }
 
-    /*fixed navbar*/
+    /*
+     * fixed navbar
+     * @todo make navbar sticky
+     */
     &.navbar-fixed-top ~ .wrap{
-
       margin-top: 90px;
-
-      @include media (">=sm") {
-        margin-top: 214px;
-      }
-
-      @include media (">=md") {
-        margin-top: 159px;
-      }
-
-      @include media (">=lg") {
-        margin-top: 90px;
-      }
 
     }
     &.navbar-fixed-bottom ~ .content-info{
-
         margin-bottom: 90px;
-
-        @include media (">=sm") {
-          margin-bottom: 214px;
-        }
-
-        @include media (">=md") {
-          margin-bottom: 159px;
-        }
-
-        @include media (">=lg") {
-          margin-bottom: 90px;
-        }
     }
 
     .navbar-nav-wrapper {
@@ -211,6 +188,7 @@
             }
 
             &.active > .nav-link{
+                color: $brand-primary;
 
                 @include media (">=sm") {
                     &:before{
@@ -269,23 +247,6 @@
             }
         }
 
-        .active >.nav-link {
-            color: $brand-primary;
-        }
-
-        .icon {
-          display: inline-block;
-          border-radius: 50%;
-          padding-top: 0.4rem;
-          border: 1px solid $brand-primary;
-          text-align: center;
-          overflow: hidden;
-          color: $brand-primary;
-
-          use {
-             fill: $brand-primary;
-          }
-        }
     }
 }
 
