@@ -1,0 +1,21 @@
+@import "common/_variables";
+
+// Automatically injected Bower dependencies via wiredep (never manually edit this block)
+// bower:scss
+@import "../../bower_components/font-awesome/scss/font-awesome.scss";
+@import "../../bower_components/include-media/dist/_include-media.scss";
+@import "../../bower_components/bootstrap/scss/bootstrap.scss";
+// endbower
+
+@import "common/mixins";
+@import "common/global";
+@import "components/carousel";
+@import "components/checkboxes";
+@import "components/forms";
+@import "components/radios";
+@import "components/ripples";
+@import "components/togglebutton";
+@import "components/wp-classes";
+@import "plugins/magnificpopup";
+@import "layouts/footer";
+@import "layouts/header";

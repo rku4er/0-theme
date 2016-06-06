@@ -1,0 +1,36 @@
+// Set wich breakpoints object to use
+$breakpoints: $grid-breakpoints;
+
+ /*
+  * Sticky footer
+  */
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+
+  .wrap {
+    flex: 1;
+  }
+}
+
+/*nice transitions for links*/
+a{
+    @include transition(color .2s ease-in-out, background .2s ease-in-out);
+}
+
+.btn {
+  position: relative;
+}
+
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: $spacer*2;
+  height: $spacer*2;
+}
+
+.lead {
+    color: $lead-color;
+    font-family: $lead-font-family;
+}

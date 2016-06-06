@@ -1,0 +1,36 @@
+.carousel {
+    &.carousel-fade {
+        .carousel-item {
+            opacity: 0;
+            transition-property: opacity;
+
+            &.active {
+                opacity: 1;
+                &.left, &.right {
+                    left: 0;
+                    z-index: 1;
+                    opacity: 0;
+                }
+            }
+        }
+        .next.left,
+        .prev.right {
+            opacity: 1;
+        }
+    }
+
+    .carousel-indicators {
+      font-size: 0;
+
+      li {
+        border-color: transparent;
+        background-color: $gray-light;
+        margin: 3px;
+
+        &.active {
+          background-color: $brand-primary;
+          margin: 2px;
+        }
+      }
+    }
+}

@@ -1,0 +1,128 @@
+/*
+ * Variables
+ */
+$radio-size: 20px;
+
+.form-horizontal .radio {
+  margin-bottom: 10px;
+}
+body:not(.mce-content-body) .radio input[type=radio]{
+    opacity: 0;
+    position: absolute;
+    margin: 0;
+    z-index: -1;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    left: 0;
+    pointer-events: none;
+}
+.radio {
+    transform: translateZ(0);
+
+    label {
+        cursor: pointer;
+        min-height: auto;
+        vertical-align: middle;
+        padding-right: 1em;
+        padding-left: 0;
+    }
+
+    .radio-material{
+        position: relative;
+        display: inline-block;
+        font-size: 0;
+        width: $radio-size;
+        height: $radio-size;
+        vertical-align: middle;
+        margin-right: 5px;
+
+        span {
+          display: block;
+          position: absolute;
+          left: 3px;
+          top: 1px;
+        }
+
+        .circle {
+          border: 2px solid $gray;
+          height: 15px;
+          width: 15px;
+          border-radius: 100%;
+        }
+        .check {
+          height: 15px;
+          width: 15px;
+          border-radius: 100%;
+          background-color: $gray-dark;
+          transform: scale3d(0, 0, 0);
+        }
+        .check:after {
+          display: block;
+          position: absolute;
+          content: "";
+          background-color: $gray;
+          left: -18px;
+          top: -18px;
+          height: 50px;
+          width: 50px;
+          border-radius: 100%;
+          z-index: 1;
+          opacity: 0;
+          margin: 0;
+          transform: scale3d(1.5, 1.5, 1);
+        }
+
+    }
+
+    input[type=radio][disabled] ~ .radio-material > .check,
+    input[type=radio][disabled] ~ .radio-material > .circle {
+      opacity: 0.5;
+    }
+
+    input[type=radio][disabled] ~ .radio-material > .circle {
+      border-color: $gray;
+    }
+
+    input[type=radio]:checked ~ .radio-material > .check {
+      transform: scale3d(0.55, 0.55, 1);
+    }
+    input[type=radio][disabled] ~ .radio-material > .check {
+      background-color: $gray;
+    }
+
+    input[type=radio]:not(:checked) ~ .radio-material > .check:after {
+      animation: rippleOff 500ms;
+    }
+    input[type=radio]:checked ~ .radio-material > .check:after {
+      animation: rippleOn 500ms;
+    }
+
+    @include variations("input[type=radio]:checked ~ .radio-material > .check", background-color);
+    @include variations("input[type=radio]:checked ~ .radio-material > .circle", border-color);
+
+}
+
+@keyframes rippleOn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes rippleOff {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
