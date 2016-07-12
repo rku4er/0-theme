@@ -18,7 +18,9 @@
     'common': {
       init: function() {
 
-        // Debounced resize
+        /*
+         *_Debounced resize
+         */
         function debounce(func, wait, immediate) {
           var timeout;
           return function() {
@@ -38,8 +40,11 @@
           };
         }
 
-        function custom_inputs(parent) {
 
+        /*
+         *_custom inputs
+         */
+        function custom_inputs(parent) {
           // Material choices
           $(parent).find('.checkbox input[type=checkbox]').after("<span class=checkbox-material><span class=check></span></span>");
           $(parent).find('.radio input[type=radio]').after("<span class=radio-material><span class=circle></span><span class=check></span></span>");
@@ -51,16 +56,23 @@
           $(parent).find('select.gfield_select').addClass('form-control');
         }
 
-        custom_inputs($('.form'));
 
-        // apply material inputs on ajax forms
-        $(document).bind('gform_post_render', function(event, form_id, cur_page) {
-          var form = $('#gform_' + form_id);
-          custom_inputs(form);
-        });
+        /*
+         * Smooth scroll
+         */
+        function smoothScrollTo(target) {
+          target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+          if (target.length) {
+            $('html, body').animate({
+              scrollTop: target.offset().top - $('.navbar-sticky').outerHeight(true)
+            }, 1000);
+          }
+        }
 
 
-        // Dropdown align plugin
+        /*
+         * Dropdown align plugin
+         */
         jQuery.fn.dropdownAlign = function(options){
 
           options = $.extend({
@@ -76,7 +88,7 @@
 
               $navbarEl.css('oveflow', 'hidden');
 
-              if(($(this).offset().left + $dropdownEL.width()) < $navbarEl.width()){
+              if(($(this).offset().left - $navbarEl.offset().left + $dropdownEL.width()) < $navbarEl.width()){
                 $(this).removeClass(options.itemClass);
               } else{
                 $(this).addClass(options.itemClass);
@@ -96,120 +108,134 @@
         };
 
 
+        // wait untila page loads
+        var onloadCallback = function() {
+
+          setTimeout(function(){
+            // needed by preloaded
+            $('body').addClass('loaded');
+
+            // when the window resizes, redraw the grid
+            $(window).trigger('resize scroll');
+
+            if (location.hash) {
+              var target = location.hash.split('#');
+              smoothScrollTo($('#'+target[1]));
+            }
+
+          }, 1);
+
+        };
+
+
         // wait until users finishes resizing the browser
         var debouncedResize = debounce(function() {
 
-          // fixed navbar offsets
+          var $navbarSticky = $('.navbar-sticky');
 
-          $('.navbar-fixed-top').each(function() {
-            var $self = $(this),
-                adminbar = $('#wpadminbar');
+          // navbar height helper
+          $navbarSticky.data('height', $navbarSticky.outerHeight());
 
-            if (adminbar.length) {
-              $self.css('margin-top', adminbar.height());
-            }
+          //respect wpadminbar
+          $navbarSticky.css('top', $('#wpadminbar').outerHeight());
 
-            $('.wrap').css('margin-top', $self.height());
-          });
 
-          $('.navbar-fixed-bottom').each(function() {
-            var $self = $(this);
-            $('.content-info').css('padding-bottom', $self.height());
-          });
-
-          // fire dropdown align plugin
+          // dropdown align plugin
           $('.navbar-nav .nav-item-has-children').dropdownAlign();
+
+
+          // carousel min-height
+          $('.carousel-inner').each(function() {
+              var $items = $(this).children(),
+                  $coll = [];
+
+              $items.css('height', 'auto').each(function(i){
+                $coll[i] = $(this).height();
+              });
+
+              $items.css('height', Math.max.apply(Math, $coll));
+          });
+
+          // reset article list height
+          $('.article-list').height('auto');
 
         }, 100);
 
 
-        //window load callback
-        $(window).load(function() {
-          // needed by preloaded
-          $('body').addClass('loaded');
+        // wait until users finishes scrolling the browser
+        var debouncedScroll = debounce(function() {
 
-          // when the window resizes, redraw the grid
-          $(window).resize(debouncedResize).trigger('resize');
+          var $navbarSticky = $('.navbar-sticky');
 
-        });
+          // navbar height helper
+          $navbarSticky.data('height', $navbarSticky.outerHeight());
+
+          if ($(window).scrollTop() > $navbarSticky.data('height')) {
+            $navbarSticky.addClass('narrow');
+          } else {
+            $navbarSticky.removeClass('narrow');
+          }
+
+        }, 10);
+
+
+
+        //window handlers
+        $(window)
+          .load(onloadCallback)
+          .scroll(debouncedScroll)
+          .resize(debouncedResize);
+
+
+
+        /*
+         * Prevent page jump to hash
+         */
+        if (location.hash) {
+          window.scrollTo(0, 0);
+        }
+
 
         // Disable 300ms click delay on mobile
         FastClick.attach(document.body);
 
+
         // Responsive video
         $('.main').fitVids();
 
-        // Video lightbox
-        $('.video-lightbox').magnificPopup({
-          type: 'iframe'
+
+        //Object fit images polyfill
+        objectFitImages();
+
+
+        // position sticky polifill
+        $('.sticky').Stickyfill();
+
+
+        // init form custom inputs
+        custom_inputs($('.form'));
+
+
+        //ripples
+        $([ ".navbar-toggler", ".nav-link", ".btn" ].join(",")).ripples();
+
+
+        // apply material inputs on ajax forms
+        $(document).bind('gform_post_render', function(event, form_id, cur_page) {
+          var form = $('#gform_' + form_id);
+          custom_inputs(form);
         });
 
-        // Image gallery lightbox
-        $('.gallery-wrapper .gallery').each(function() {
-          var $thumb = $(this).find('a.gallery-thumb');
 
-          $thumb.each(function() {
-
-            $(this).magnificPopup({
-              type: 'image',
-              enableEscapeKey: true,
-              gallery: {
-                enabled: false,
-                tPrev: '',
-                tNext: '',
-                tCounter: '%curr% | %total%'
-              },
-              image: {
-                verticalFit: true,
-                markup: '<div class="mfp-figure gallery-lightbox">' +
-                          '<div class="mfp-close"></div>' +
-                          '<a class="mfp-pin-it"' +
-                          'href="http://pinterest.com/pin/create/bookmarklet/' +
-                          '?media=' + window.location.protocol +
-                          '//' + window.location.host + $(this).data('media') +
-                          '&url=' + $(this).data('url') +
-                          '&is_video=false' +
-                          '&description=' + $(this).data('description') +
-                          '"><span class="fa fa-pinterest"></span></a>' +
-                          '<div class="mfp-img"></div>' +
-                          '<div class="mfp-bottom-bar">' +
-                            '<div class="mfp-title"></div>' +
-                            '<div class="mfp-counter"></div>' +
-                          '</div>' +
-                        '</div>',
-                titleSrc: function(item) {
-                  return item.el[0].nextSibling.innerHTML;
-                }
-              },
-              mainClass: 'mfp-fade'
-            });
-          });
-        });
-
-        /**
-         * ripples
-         */
-        $([
-          ".navbar-toggle",
-          ".btn:not(.btn-link)",
-          ".card-image",
-          ".navbar a:not(.withoutripple)",
-          ".dropdown-menu a:not(.withoutripple)",
-          ".withripple"
-        ].join(",")).ripples();
-
-        // Handle hash anchors
-        $('.scroll-link').on('click', function(e) {
-          e.preventDefault();
-          var target = $($(this).attr('href'));
-
-          if (target.length) {
-            var offset = Math.round(target.offset().top - $('.navbar-fixed-top').outerHeight() - $('#wpadminbar').outerHeight());
-            $('html,body').animate({
-              scrollTop: offset
-            }, 1000, 'easeInOutCubic');
+        // smooth scrolling
+        $('a[href*="#"]:not([href="#"])').click(function() {
+          if (location.pathname.replace(/^\//,'') === this.pathname.replace(/^\//,'') && location.hostname === this.hostname) {
+            smoothScrollTo($(this.hash));
+            return false;
           }
         });
+
+
 
       },
       finalize: function() {

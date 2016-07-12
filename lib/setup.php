@@ -11,7 +11,7 @@ use Roots\Sage\Utils;
 add_action('after_setup_theme', __NAMESPACE__ . '\\setup');
 function setup() {
   $options = Utils\sage_get_options();
-  $gaID    = isset($options['google_analytics_id']) ? $options['google_analytics_id'] : '';
+  $gaID    = (isset($options['google_analytics_id']) && !empty($options['google_analytics_id'])) ? $options['google_analytics_id'] : '';
 
   add_theme_support('soil-clean-up');         // Enable clean up from Soil
   add_theme_support('soil-relative-urls');    // Enable relative URLs from Soil
@@ -57,12 +57,52 @@ function setup() {
   add_filter('widget_text', 'do_shortcode');
 
   // Gets rid of the word "Archive:" in front of the Archive title
+  // gets rid of the word "archive:" in front of the archive title
   add_filter( 'get_the_archive_title', function( $title ) {
-    if ( is_post_type_archive() ) {
-      $title = post_type_archive_title();
+    if ( is_category() ) {
+        $title = sprintf( __( 'Category: %s' ), single_cat_title( '', false ) );
+    } elseif ( is_tag() ) {
+        $title = sprintf( __( 'tag: %s' ), single_tag_title( '', false ) );
+    } elseif ( is_author() ) {
+        $title = sprintf( __( '<span class="profile-picture">%s</span> %s' ), get_avatar( get_the_author_meta('id'), '64'), '<span class="vcard">' . get_the_author() . '</span>' );
+    } elseif ( is_year() ) {
+        $title = sprintf( __( 'year: %s' ), get_the_date( _x( 'y', 'yearly archives date format' ) ) );
+    } elseif ( is_month() ) {
+        $title = sprintf( __( 'month: %s' ), get_the_date( _x( 'f y', 'monthly archives date format' ) ) );
+    } elseif ( is_day() ) {
+        $title = sprintf( __( 'day: %s' ), get_the_date( _x( 'f j, y', 'daily archives date format' ) ) );
+    } elseif ( is_tax( 'post_format' ) ) {
+        if ( is_tax( 'post_format', 'post-format-aside' ) ) {
+            $title = _x( 'asides', 'post format archive title' );
+        } elseif ( is_tax( 'post_format', 'post-format-gallery' ) ) {
+            $title = _x( 'galleries', 'post format archive title' );
+        } elseif ( is_tax( 'post_format', 'post-format-image' ) ) {
+            $title = _x( 'images', 'post format archive title' );
+        } elseif ( is_tax( 'post_format', 'post-format-video' ) ) {
+            $title = _x( 'videos', 'post format archive title' );
+        } elseif ( is_tax( 'post_format', 'post-format-quote' ) ) {
+            $title = _x( 'quotes', 'post format archive title' );
+        } elseif ( is_tax( 'post_format', 'post-format-link' ) ) {
+            $title = _x( 'links', 'post format archive title' );
+        } elseif ( is_tax( 'post_format', 'post-format-status' ) ) {
+            $title = _x( 'statuses', 'post format archive title' );
+        } elseif ( is_tax( 'post_format', 'post-format-audio' ) ) {
+            $title = _x( 'audio', 'post format archive title' );
+        } elseif ( is_tax( 'post_format', 'post-format-chat' ) ) {
+            $title = _x( 'chats', 'post format archive title' );
+        }
+    } elseif ( is_post_type_archive() ) {
+        $title = sprintf( __( 'archives: %s' ), post_type_archive_title( '', false ) );
+    } elseif ( is_tax() ) {
+        $tax = get_taxonomy( get_queried_object()->taxonomy );
+        /* translators: 1: taxonomy singular name, 2: current taxonomy term */
+        $title = sprintf( __( '%1$s: %2$s' ), $tax->labels->singular_name, single_term_title( '', false ) );
+    } else {
+        $title = __( 'archives' );
     }
+
     return $title;
-  } );
+  });
 
   // add excerpt to pages
   add_post_type_support( 'page', 'excerpt' );
@@ -70,40 +110,25 @@ function setup() {
 }
 
 
+
 /**
- * Custom Post Type
+ * Register sidebars
  */
+add_action('widgets_init', __NAMESPACE__ . '\\widgets_init');
 
-add_action( 'init', __NAMESPACE__ . '\\create_custom_post_types' );
+function widgets_init() {
 
-function create_custom_post_types() {
+  register_sidebar(array(
+    'name'          => __('Primary', 'sage'),
+    'id'            => 'sidebar-primary',
+    'before_widget' => '<section class="widget %1$s %2$s">',
+    'after_widget'  => '</section>',
+    'before_title'  => '<h3>',
+    'after_title'   => '</h3>'
+  ));
 
-  // Estate Sales CPT
-  register_post_type( 'product',
-    array(
-      'labels' => array(
-        'name' => __( 'Products' ),
-        'singular_name' => __( 'Product' ),
-        'add_new' => __( 'Add Product' ),
-        'add_new_item' => __( 'Add New Product' ),
-      ),
-      'rewrite' => array('slug' => __( 'products' )),
-      'public' => true,
-      'exclude_from_search' => false,
-      'has_archive' => true,
-      'hierarchical' => true,
-      'capability_type' => 'post',
-      'can_export' => true,
-      'menu_position' => 25,
-      'menu_icon' => 'dashicons-cart',
-      'supports' => array(
-        'title',
-        'editor',
-        'thumbnail'
-      )
-    )
-  );
 }
+
 
 
 /**
@@ -121,7 +146,7 @@ function sage_assets() {
   }
 
   wp_enqueue_script('modernizr', Assets\asset_path('scripts/modernizr.js'), array(), null, true);
-  wp_enqueue_script('sage_js', Assets\asset_path('scripts/main.js'), array('jquery'), null, true);
+  wp_enqueue_script('sage_js', Assets\asset_path('scripts/main.js'), array('jquery', 'modernizr'), null, true);
 
   // ajax helper
   wp_localize_script( 'sage_js', 'ajax_helper', array(
@@ -130,6 +155,8 @@ function sage_assets() {
   ));
 
 }
+
+
 
 
 /**
@@ -148,24 +175,6 @@ function sage_options_page() {
             'menu_slug'     => 'theme_options',
             'capability'    => 'manage_options',
             'redirect'      => true
-        ));
-
-        acf_add_options_sub_page(array(
-            'page_title'    => __('Header', 'sage'),
-            'menu_title'    => __('Header', 'sage'),
-            'parent_slug'   => 'theme_options',
-        ));
-
-        acf_add_options_sub_page(array(
-            'page_title'    => __('Footer', 'sage'),
-            'menu_title'    => __('Footer', 'sage'),
-            'parent_slug'   => 'theme_options',
-        ));
-
-        acf_add_options_sub_page(array(
-            'page_title'    => __('Editor', 'sage'),
-            'menu_title'    => __('Editor', 'sage'),
-            'parent_slug'   => 'theme_options',
         ));
 
     }

@@ -52,7 +52,7 @@ function gallery($attr) {
 
   $id = intval($id);
   $columns = (12 % $columns == 0) ? $columns : 3;
-  $grid = sprintf('gallery-item col-xs-6 col-md-4 col-xl-%1$s', 12 / $columns);
+  $grid = sprintf('gallery-item col-xs-12 col-sm-6 col-md-4 col-lg-%1$s', 12 / $columns);
 
   if ($order === 'RAND') {
     $orderby = 'none';

@@ -17,6 +17,10 @@ function sage_body_class($classes) {
       $classes[] = basename(get_permalink());
     }
   }
+  // Add class if sidebar is active
+  if (Utils\display_sidebar()) {
+    $classes[] = 'sidebar-primary';
+  }
   return $classes;
 }
 
@@ -66,7 +70,7 @@ add_action('pre_get_posts', __NAMESPACE__ . '\\sage_search_filter');
 function sage_search_filter($query) {
   if ( !is_admin() && $query->is_main_query() ) {
     if ($query->is_search) {
-      $query->set('post_type', array('post', 'page'));
+      $query->set('post_type', array('post'));
     }
   }
 }
@@ -79,36 +83,20 @@ function sage_search_filter($query) {
 
 add_action( 'login_enqueue_scripts', __NAMESPACE__ . '\\sage_login_logo' );
 
-function sage_login_logo() {
-  $options = sage_get_options();
-  $logo    = $options['logo'];
-?>
-    <style type="text/css">
-        body.login div#login h1 a {
-          background-image: url(<?php echo $logo['url']; ?>);
+function login_logo() {
+
+  if (has_site_icon()) {
+
+    $logo_src = str_replace('cropped-', '', wp_get_attachment_image_url( get_option( 'site_icon' ), 'full'  ));
+
+     ?><style type="text/css">
+        #login h1 a {
+          background-image: url(<?php echo $logo_src; ?>);
           background-size: contain;
-        }
-        .login h1 a {
-          height: 138px !important;
-          width: 236px !important;
+          width: 100% !important;
         }
     </style>
-<?php }
-
-
-/**
- * Set default term on publish
- */
-
-//add_action( 'publish_product', __NAMESPACE__ . '\\sage_set_prop_tax' );
-
-function sage_set_prop_tax($post_ID){
-    $type = 'product_cat';
-    if(!has_term('',$type,$post_ID)){
-        $term = get_term_by('slug', 'uncategorized', $type);
-        wp_set_object_terms($post_ID, $term->term_id, $type);
-    }
-}
+<?php }}
 
 
 /**
@@ -251,26 +239,118 @@ function next_posts_link_attributes() {
 }
 
 
-/**
- * Google fonts
- * @todo make google fonts editable from admin panel via ACF
+
+/*
+ * Customize featured image output position
+ */
+add_filter( 'the_content', __NAMESPACE__ . '\\featured_image_before_content' );
+
+function featured_image_before_content( $content ) {
+  global $post;
+
+   if ( is_singular('post') && has_post_thumbnail()) {
+       $thumbnail = get_the_post_thumbnail();
+       $data = Utils\sage_first_letter();
+
+       $content = "
+          <p class=\"post-thumbnail-wrapper\">{$thumbnail}</p>
+          <div class=\"post-content\" {$data}>{$content}</div>
+       ";
+
+   }
+
+   return $content;
+}
+
+
+/*
+ * Move textarea to the top
  */
 
-add_action( 'wp_head', __NAMESPACE__ . '\\sage_embed_google_fonts', 10, 3 );
+add_filter( 'comment_form_fields', __NAMESPACE__ . '\\sage_comment_form_fields', 99 );
 
-function sage_embed_google_fonts() { ?>
+function sage_comment_form_fields( $fields ) {
 
-<script type="text/javascript">
-  WebFontConfig = {
-    google: { families: [ 'Lato:400,300,300italic,400italic,700italic,700:latin', 'Droid+Serif:400,400italic,700,700italic:latin' ] }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })(); </script>
+  // If the comment field is set.
+  if ( isset( $fields['comment'] ) ) {
 
-<?php }
+    // Grab the comment field.
+    $comment_field = $fields['comment'];
+
+    // Remove the comment field from its current position.
+    unset( $fields['comment'] );
+
+    // Put the comment field at the end.
+    $fields['comment'] = $comment_field;
+  }
+
+  return $fields;
+}
+
+
+/*
+ * Adding the Open Graph in the Language Attributes
+ */
+add_filter('language_attributes', __NAMESPACE__ . '\\add_opengraph_doctype');
+
+function add_opengraph_doctype( $output ) {
+  return $output . ' xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml"';
+}
+
+/*
+ * Lets add Open Graph Meta Info
+ */
+
+add_action( 'wp_head', __NAMESPACE__ . '\\insert_fb_in_head', 5 );
+
+function insert_fb_in_head() {
+  global $post;
+  if ( !is_singular()) return;
+
+  //echo '<meta property="fb:admins" content="YOUR USER ID"/>';
+  echo '<meta property="og:title" content="' . get_the_title() . '"/>';
+  echo '<meta property="og:type" content="article"/>';
+  echo '<meta property="og:url" content="' . get_permalink() . '"/>';
+  echo '<meta property="og:site_name" content="' . get_bloginfo('name') . '"/>';
+
+  if(has_post_thumbnail( $post->ID )) { //the post does not have featured image, use a default image
+    $thumbnail_src = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'medium' );
+    echo '<meta property="og:image" content="' . esc_attr( $thumbnail_src[0] ) . '"/>';
+  }
+}
+
+
+
+/*
+ * Defered scripts
+ */
+add_filter('script_loader_tag', __NAMESPACE__ . '\\add_defer_attribute', 10, 2);
+
+function add_defer_attribute($tag, $handle) {
+  $scripts_to_defer = array('google_maps');
+
+  foreach($scripts_to_defer as $defer_script) {
+    if ($defer_script !== $handle) return $tag;
+    return str_replace(' src', ' defer="defer" src', $tag);
+  }
+
+  return $tag;
+}
+
+
+
+/*
+ * Async scripts
+ */
+add_filter('script_loader_tag', __NAMESPACE__ . '\\add_async_attribute', 10, 2);
+
+function add_async_attribute($tag, $handle) {
+  $scripts_to_async = array('google_maps');
+
+  foreach($scripts_to_async as $async_script) {
+    if ($async_script !== $handle) return $tag;
+    return str_replace(' src', ' async="async" src', $tag);
+  }
+
+  return $tag;
+}

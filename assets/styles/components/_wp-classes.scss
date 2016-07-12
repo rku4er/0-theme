@@ -1,5 +1,3 @@
-$margin : 20px;
-
 // WordPress Generated Classes
 // http://codex.wordpress.org/CSS#WordPress_Generated_Classes
 
@@ -12,23 +10,23 @@ $margin : 20px;
 }
 .aligncenter {
   display: block;
-  margin: ($line-height / 2) auto;
+  margin: $spacer auto;
   height: auto;
 }
 .alignleft,
 .alignright {
-  margin-bottom: ($line-height / 2);
+  margin-bottom: $spacer;
   height: auto;
 }
 @include media (">=sm") {
   // Only float if not on an extra small device
   .alignleft {
     float: left;
-    margin-right: ($line-height / 2);
+    margin-right: $spacer;
   }
   .alignright {
     float: right;
-    margin-left: ($line-height / 2);
+    margin-left: $spacer;
   }
 }
 
@@ -36,8 +34,4 @@ $margin : 20px;
 .screen-reader-text {
   @extend .sr-only;
   @extend .sr-only-focusable;
-}
-
-.wp-post-image {
-     @include img-fluid();
 }

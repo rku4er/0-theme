@@ -26,13 +26,13 @@
 //
 // Grayscale and brand colors for use across Bootstrap.
 
-$gray-dark:                 #363636;
-$gray:                      #707070;
-$gray-light:                #a8a8a8;
-$gray-lighter:              #eceeef;
-$gray-lightest:             #f7f7f9;
+$gray-dark:                 #252525;
+$gray:                      #363636;
+$gray-light:                #464646;
+$gray-lighter:              #a0a0a0;
+$gray-lightest:             #ebebeb;
 
-$brand-primary:             #45787d;
+$brand-primary:             #1ba0fd;
 $brand-success:             #5cb85c;
 $brand-info:                #5bc0de;
 $brand-warning:             #f0ad4e;
@@ -44,9 +44,9 @@ $brand-danger:              #d9534f;
 // Quickly modify global styling by enabling or disabling optional features.
 
 $enable-flex:               true;
-$enable-rounded:            false;
-$enable-shadows:            false;
-$enable-gradients:          false;
+$enable-rounded:            true;
+$enable-shadows:            true;
+$enable-gradients:          true;
 $enable-transitions:        true;
 $enable-hover-media-query:  false;
 $enable-grid-classes:       true;
@@ -125,10 +125,8 @@ $grid-breakpoints: (
 $container-max-widths: (
   sm: 576px,
   md: 720px,
-  lg: 720px,
-  xl: 940px
-  /*lg: 940px,*/
-  /*xl: 1140px*/
+  lg: 940px,
+  xl: 1140px
 );
 
 
@@ -137,32 +135,33 @@ $container-max-widths: (
 // Set the number of columns and specify the width of the gutters.
 
 $grid-columns:               12;
-$grid-gutter-width:          1.875rem; // 30px
+$grid-gutter-width:          3.75rem; // 30px
 
 
 // Typography
 //
 // Font, line-height, and color for body text, headings, and more.
 
-$font-family-sans-serif:     Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-$font-family-serif:          "Droid Serif", Georgia, "Times New Roman", Times, serif;
+$font-family-sans-serif:     "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-serif:          Georgia, "Times New Roman", Times, serif;
+$font-family-headings:       "Poiret One", sans-serif;
 $font-family-monospace:      Menlo, Monaco, Consolas, "Courier New", monospace;
 $font-family-base:           $font-family-sans-serif;
 
 // Pixel value used to responsively scale all typography. Applied to the `<html>` element.
-$font-size-root:             15px;
+$font-size-root:             16px;
 
 $font-size-base:             1rem;
 $font-size-lg:               1.875rem;
 $font-size-sm:               .875rem;
 $font-size-xs:               .75rem;
 
-$font-size-h1:               2.5rem;
-$font-size-h2:               1.875rem;
-$font-size-h3:               1.75rem;
-$font-size-h4:               1.5rem;
-$font-size-h5:               1.25rem;
-$font-size-h6:               1rem;
+$font-size-h1:               3rem;
+$font-size-h2:               2.75rem;
+$font-size-h3:               1.875rem;
+$font-size-h4:               1.625rem;
+$font-size-h5:               1.375rem;
+$font-size-h6:               1.125rem;
 
 $display1-size:               6rem;
 $display2-size:               5.5rem;
@@ -176,16 +175,13 @@ $display4-weight:             300;
 
 $line-height:                1.6;
 
-$headings-margin-bottom:     1em;
-$headings-font-family:       $font-family-serif;
-$headings-font-weight:       700;
+$headings-font-family:       $font-family-headings;
+$headings-font-weight:       400;
 $headings-line-height:       1.1;
-$headings-color:             $gray-dark;
+$headings-color:             $body-color;
 
-$lead-font-size:             1.25rem;
+$lead-font-size:             1.5rem;
 $lead-font-weight:           400;
-$lead-color:                 $gray-dark;
-$lead-font-family:           $font-family-serif;
 
 $text-muted:                  $gray-light;
 
@@ -243,7 +239,7 @@ $table-border-color:            $gray-lighter;
 //
 // For each of Bootstrap's buttons, define text, background and border color.
 
-$btn-padding-x:                  1rem;
+$btn-padding-x:                  2rem;
 $btn-padding-y:                  .375rem;
 $btn-font-weight:                normal;
 
@@ -273,7 +269,7 @@ $btn-danger-border:              $btn-danger-bg;
 
 $btn-link-disabled-color:        $gray-light;
 
-$btn-padding-x-sm:               .75rem;
+$btn-padding-x-sm:               1rem;
 $btn-padding-y-sm:               .25rem;
 
 $btn-padding-x-lg:               1.25rem;
@@ -293,7 +289,7 @@ $input-padding-y:                .5rem;
 $input-bg:                       #fff;
 $input-bg-disabled:              $gray-lighter;
 
-$input-color:                    $gray;
+$input-color:                    $gray-dark;
 $input-border-color:             #ccc;
 $input-btn-border-width:         $border-width; // For form controls and buttons
 $input-box-shadow:               inset 0 1px 1px rgba(0,0,0,.075);
@@ -335,7 +331,7 @@ $form-icon-danger: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My
 // Dropdown menu container and contents.
 
 $dropdown-bg:                    #fff;
-$dropdown-border-color:          lighten($brand-primary, 10%);
+$dropdown-border-color:          $gray-lightest;
 $dropdown-border-width:          $border-width;
 $dropdown-divider-bg:            #e5e5e5;
 
@@ -343,8 +339,8 @@ $dropdown-link-color:            $gray-dark;
 $dropdown-link-hover-color:      darken($gray-dark, 5%);
 $dropdown-link-hover-bg:         #f5f5f5;
 
-$dropdown-link-active-color:     $component-active-color;
-$dropdown-link-active-bg:        $component-active-bg;
+$dropdown-link-active-color:     $brand-primary;
+$dropdown-link-active-bg:        ;
 
 $dropdown-link-disabled-color:   $gray-light;
 
@@ -368,9 +364,11 @@ $zindex-modal:             1050;
 
 // Navbar
 
+$navbar-height:                     70px;
+
 $navbar-border-radius:              $border-radius;
-$navbar-padding-horizontal:         $spacer;
-$navbar-padding-vertical:           ($spacer / 2);
+$navbar-padding-horizontal:         0;
+$navbar-padding-vertical:           0;
 
 $navbar-dark-color:                 rgba(255,255,255,.5);
 $navbar-dark-hover-color:           rgba(255,255,255,.75);

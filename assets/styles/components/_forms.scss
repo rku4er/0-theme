@@ -1,47 +1,82 @@
 .gform_wrapper ul {
   @extend .list-unstyled;
 }
+
 .gform_wrapper li {
   @extend .form-group;
+  margin-bottom: 0;
+
+  &:not(:first-child) {
+    margin-top: $spacer;
+  }
+
+  &.hidden + li {
+    margin-top: 0;
+  }
 }
+
 .gform_wrapper form {
   margin-bottom: 0;
 }
+
 .gform_wrapper .gfield_required {
   color: $state-danger-text;
 }
+
 .ginput_container input,
 .ginput_container select,
 .ginput_container textarea {
   @extend .form-control;
 }
+
 .ginput_container textarea {
-  height: auto;
+  height: 128px;
 }
+
 .gform_button {
   @extend .btn;
   @extend .btn-primary;
 }
+
 .gform_wrapper .gfield_error {
-  .gfield_label,
   .validation_message {
     color: $state-danger-text;
+    font-size: 14px/$font-size-root*1rem;
   }
 }
+
 .validation_error {
   @extend .alert;
   @extend .alert-danger;
 }
+
+.gfield_label{
+  font-size: 14px/$font-size-root*1rem;
+  margin-bottom: 0;
+}
+
+.gfield_required {
+  margin-left: $spacer/2;
+}
+
 #gforms_confirmation_message {
   @extend .alert;
   @extend .alert-success;
 }
+
 .input-group {
   .input-group-btn,
-    .form-control{
-      display: flex;
+  .form-control{
+    display: flex;
   }
 }
-.nolabel label {
-   display: none;
+
+.form-inline .input-group{
+  display: flex;
+}
+
+.nolabel {
+  label {
+    display: none;
+  }
 }

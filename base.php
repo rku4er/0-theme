@@ -1,8 +1,6 @@
 <?php
-
-    use Roots\Sage\Wrapper;
-    use Roots\Sage\Utils;
-
+  use Roots\Sage\Wrapper;
+  use Roots\Sage\Utils;
 ?>
 
 <!doctype html>
@@ -20,16 +18,23 @@
 
     <?php get_template_part('templates/icons-svg'); ?>
 
-    <?php
-        do_action('get_header');
-        get_template_part('templates/header');
-    ?>
-
     <div class="wrap" role="document">
 
-        <main class="main" role="main">
-            <?php include Wrapper\template_path(); ?>
-        </main><!-- /.main -->
+      <?php
+          do_action('get_header');
+          get_template_part('templates/header');
+      ?>
+
+      <main class="main" role="main">
+          <?php include Wrapper\template_path(); ?>
+      </main><!-- /.main -->
+
+      <?php if (Utils\display_sidebar()) : ?>
+        <aside class="sidebar" role="complementary">
+          <?php include Wrapper\sidebar_path(); ?>
+        </aside><!-- /.sidebar -->
+      <?php endif; ?>
+
 
     </div><!-- /.wrap -->
 

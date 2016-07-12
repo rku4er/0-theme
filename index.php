@@ -2,11 +2,12 @@
   <div class="alert alert-warning">
     <?php _e('Sorry, no results were found.', 'sage'); ?>
   </div>
-  <?php get_search_form(); ?>
 <?php endif; ?>
 
-<?php while (have_posts()) : the_post(); ?>
-  <?php get_template_part('templates/content', get_post_type() != 'post' ? get_post_type() : get_post_format()); ?>
-<?php endwhile; ?>
+<ul class="article-list">
+  <?php while (have_posts()) : the_post(); ?>
+    <?php get_template_part('templates/content', 'latest-article'); ?>
+  <?php endwhile; ?>
+</ul>
 
 <?php the_posts_navigation(); ?>

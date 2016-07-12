@@ -1,36 +1,372 @@
-// Set wich breakpoints object to use
+/*
+ *Sidebar width
+ */
+$sidebar-columns: 4;
+
+
+/*
+ * Play icon
+ */
+$icon-external-link: svg-inline('<svg x="0" y="0"  width="16" height="16" viewBox="0 0 16 16"><style>path{fill:white;}</style><path d="M14 16v-11l-1 1v9h-12v-12h9l1-1h-11v14z M16 0h-5l1.8 1.8-6.8 6.8 1.4 1.4 6.8-6.8 1.8 1.8z"/></svg>');
+
+/*
+ * Set wich breakpoints object to use
+ */
 $breakpoints: $grid-breakpoints;
 
- /*
-  * Sticky footer
-  */
-body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
 
-  .wrap {
-    flex: 1;
+/*
+ * Viewport fix for IE Win8 metro
+ */
+@-ms-viewport {
+    width: device-width;
+}
+
+
+/*
+ * Viewport fix for Windows phone
+ */
+@viewport {
+    width: device-width;
+}
+
+
+
+/*
+ * Sticky utility
+ */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+
+
+/*
+ * Hidden utility
+ */
+.hidden {
+  display: none;
+}
+
+
+
+/*
+ * Labels
+ */
+label {
+   display: inline;
+}
+
+
+/*
+ * Lists
+ */
+ul, ol {
+  padding-left: $spacer;
+}
+
+
+
+/*
+ * Flexible grid 
+ */
+.col-xs-auto {
+  @include make-col();
+
+  @include media (">=sm") {
+    flex: 1 1 0;
   }
 }
 
-/*nice transitions for links*/
-a{
+
+
+/*
+ * make all images fluid
+ */
+img {
+  @include img-fluid();
+}
+
+
+
+/*
+ * Header margin
+ */
+h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0;
+}
+
+
+
+/*
+ * Link transition
+ */
+a {
     @include transition(color .2s ease-in-out, background .2s ease-in-out);
 }
 
-.btn {
-  position: relative;
+
+
+/*
+ * More link
+ */
+.more {
+  white-space: nowrap;
 }
 
+
+
+/*
+ * Icons
+ */
 .icon {
   display: inline-block;
   vertical-align: middle;
-  width: $spacer*2;
-  height: $spacer*2;
+  width: 25px;
+  height: 25px;
 }
 
-.lead {
-    color: $lead-color;
-    font-family: $lead-font-family;
+
+
+/*
+ * Grid
+ */
+.grid-container {
+  @include make-container();
+  @include make-container-max-widths();
+}
+
+.grid-row {
+  @include make-row();
+  margin-bottom: $grid-gutter-width;
+}
+
+.main {
+  @include make-col();
+  @include make-col-span($grid-columns);
+
+
+  .sidebar-primary & {
+    @include media (">=md") {
+      @include make-col-span($grid-columns - $sidebar-columns);
+    }
+  }
+}
+
+.sidebar {
+  @include make-col();
+  @include make-col-span($grid-columns);
+
+  @include media (">=md") {
+    @include make-col-span($sidebar-columns);
+  }
+}
+
+
+
+/*
+ * Search
+ */
+.search,
+.archive {
+  .hentry {
+    &:not(:last-child) {
+      margin-bottom: $grid-gutter-width;
+    }
+
+    @include media (">=sm") {
+      padding-left: 200px;
+    }
+
+    @include media (">=lg") {
+      padding-left: 250px;
+    }
+
+    img {
+      @include media ("<sm") {
+        margin-bottom: $spacer;
+        width: 100%;
+      }
+
+      @include media (">=sm") {
+        float: left;
+        margin-left: -200px;
+      }
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    p {
+       margin-bottom: 0;
+    }
+  }
+}
+
+
+/*
+ * Header styling
+ */
+.navbar {
+  background-color: #fff;
+  margin: 0;
+
+  .collapse {
+    @include media (">=sm") {
+      display: block !important;
+      height: auto !important;
+    }
+  }
+
+}
+
+
+/*
+ * Menu Toggler
+ */
+.navbar-toggler {
+  color: $brand-primary;
+  overflow: hidden;
+  position: relative;
+  vertical-align: top;
+  border-radius: 0;
+
+  @include media (">=sm") {
+    display: none;
+  }
+
+  .icon {
+      @include transition(opacity .3s ease-in-out, transform .3s ease-in-out);
+      display: block;
+      font-size: 0;
+      width: $spacer*2;
+      height: $spacer*1.5;
+      overflow: hidden;
+  }
+
+  .icon-menu {
+    transform: translate3d(0, 30px, 0);
+    @include toggle-off();
+    border-bottom: 3px solid $brand-primary;
+
+    &:before,
+    &:after {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 100%;
+        background-color: $brand-primary;
+        height: 3px;
+    }
+
+    &:after {
+         top: 50%;
+    }
+  }
+  .icon-close {
+    transform: translate3d(0, 0, 0);
+    @include toggle-on();
+
+    &:before,
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      width: 80%;
+      margin: auto;
+      background-color: $brand-primary;
+      height: 2px;
+      transform-origin: 50% 50%;
+    }
+
+    &:after {
+        transform: rotate(45deg);
+    }
+
+    &:before {
+        transform: rotate(-45deg);
+    }
+  }
+
+  &:not(.collapsed) {
+    background-color: $gray-lightest;
+  }
+
+  &.collapsed {
+
+    .icon-menu {
+      transform: translate3d(0, 0, 0);
+      @include toggle-on();
+    }
+    .icon-close {
+      transform: translate3d(0, -30px, 0);
+      @include toggle-off();
+    }
+  }
+}
+
+
+
+/*
+ * Menu
+ */
+.navbar-nav {
+  @include media ("<md") {
+    text-align: center;
+  }
+
+  .nav-item {
+    position: relative;
+    float: none;
+
+    >.dropdown-menu{
+      @include transition(opacity .2s ease-out);
+
+      @include media (">=sm") {
+        display: block;
+        visibility: hidden;
+        opacity: 0;
+      }
+    }
+
+    &.open{
+      >.dropdown-menu{
+          opacity: 1;
+          visibility: visible;
+      }
+    }
+
+    &.dropdown-rtl{
+      >.dropdown-menu{
+          left: auto;
+          right: 0;
+      }
+    }
+  }
+
+}
+
+
+/*
+ * Dropdown menu
+ */
+.dropdown-menu {
+  padding: 0;
+  border-radius: 0;
+
+  @include media ("<sm") {
+    position: static;
+    float: none;
+    margin: 0;
+    border-radius: 0;
+    border: 0 none;
+  }
 }

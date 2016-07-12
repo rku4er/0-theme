@@ -1,36 +1,19 @@
-<?php
+<?php if (have_posts()) : ?>
 
-/**
- * Archive template
- */
+  <ul class="article-list">
+      <?php while (have_posts()) : the_post(); ?>
+        <?php get_template_part('templates/content', 'latest-article'); ?>
+      <?php endwhile; ?>
+  </ul>
 
-use Roots\Sage\Titles;
+  <?php the_posts_navigation(); ?>
 
-?>
-<div class="page-header">
+<?php else : ?>
 
-  <h1><?php echo Titles\title(); ?></h1>
+  <div class="alert alert-warning">
+    <?php _e('Sorry, no results were found.', 'sage'); ?>
+  </div>
 
-</div>
+  <?php get_search_form(); ?>
 
-<div class="container page-content">
-
-  <?php if (have_posts()) : ?>
-
-    <?php while (have_posts()) : the_post(); ?>
-      <?php get_template_part('templates/content'); ?>
-    <?php endwhile; ?>
-
-    <?php the_posts_navigation(); ?>
-
-  <?php else : ?>
-
-    <div class="alert alert-warning">
-      <?php _e('Sorry, no results were found.', 'sage'); ?>
-    </div>
-
-    <?php get_search_form(); ?>
-
-  <?php endif; ?>
-
-</div>
+<?php endif; ?>

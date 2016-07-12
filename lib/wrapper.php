@@ -13,6 +13,10 @@ function template_path() {
   return SageWrapping::$main_template;
 }
 
+function sidebar_path() {
+  return new SageWrapping('templates/sidebar.php');
+}
+
 class SageWrapping {
   // Stores the full path to the main template file
   public static $main_template;

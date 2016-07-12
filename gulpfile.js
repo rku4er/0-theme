@@ -21,6 +21,7 @@ var sourcemaps   = require('gulp-sourcemaps');
 var uglify       = require('gulp-uglify');
 var svgstore     = require('gulp-svgstore');
 var inject       = require('gulp-inject');
+var svgmin       = require('gulp-svgmin');
 
 // See https://github.com/austinpray/asset-builder
 var manifest = require('asset-builder')('./assets/manifest.json');
@@ -174,6 +175,7 @@ var writeToManifest = function(directory) {
 gulp.task('icons', function () {
     var svgs = gulp
         .src([path.source + 'icons/**/*.svg'])
+        .pipe(svgmin())
         .pipe(svgstore({ inlineSvg: true }));
 
     function fileContents (filePath, file) {
