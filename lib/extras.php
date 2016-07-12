@@ -250,11 +250,10 @@ function featured_image_before_content( $content ) {
 
    if ( is_singular('post') && has_post_thumbnail()) {
        $thumbnail = get_the_post_thumbnail();
-       $data = Utils\sage_first_letter();
 
        $content = "
           <p class=\"post-thumbnail-wrapper\">{$thumbnail}</p>
-          <div class=\"post-content\" {$data}>{$content}</div>
+          <div class=\"post-content\">{$content}</div>
        ";
 
    }

@@ -291,3 +291,41 @@ function sage_get_heading($tag = 'h1', $title = null) {
   return sprintf('<%1$s>%2$s</%1$s>', $tag, $title);
 
 }
+
+
+/*
+ * Get categories
+ */
+function sage_post_categories( $sep = '', $id = null ) {
+
+  global $post;
+
+  if ( isset( $post->ID ) && !$id ) $id = $post->ID;
+
+  $terms = get_the_category($id);
+
+  $terms_arr = array();
+
+  if ( count($terms) > 0 ){
+    foreach ( $terms as $term ) {
+      $terms_arr[] = sprintf('<a href="%s">%s</a>', get_term_link($term->term_id, 'post_tag'), $term->name);
+    }
+  }
+
+  $terms = implode($sep, $terms_arr);
+
+  echo $terms;
+
+}
+
+
+
+/*
+ * Author archive link
+ */
+function sage_author_archive_link( $id = null ) {
+  global $post;
+
+  if ( isset( $post->ID ) && !$id ) $id = $post->ID;
+  echo '<a href="' . get_author_posts_url( get_the_author_meta('ID'), get_the_author_meta( 'user_nicename'  )  ) . '">' . get_the_author() . '</a>';
+}
